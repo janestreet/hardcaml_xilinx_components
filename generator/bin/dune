@@ -1,0 +1,6 @@
+(executables (names generator) (public_names hardcaml_xilinx_components)
+ (libraries core hardcaml re stdio xilinx_vhdl) (preprocess (pps ppx_jane)))
+
+(rule (targets data.ml) (deps)
+ (action
+  (bash "echo \"let read (_s : string) : string option = None\" > data.ml")))

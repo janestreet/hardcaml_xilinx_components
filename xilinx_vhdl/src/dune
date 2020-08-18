@@ -1,0 +1,7 @@
+(library (name xilinx_vhdl)
+ (public_name hardcaml_xilinx_components.xilinx_vhdl)
+ (libraries base hardcaml stdio) (preprocess (pps ppx_jane)))
+
+(ocamllex lexer)
+
+(ocamlyacc parser)
