@@ -1,5 +1,6 @@
 (executables (names generator) (public_names hardcaml_xilinx_components)
- (libraries core hardcaml re stdio xilinx_vhdl) (preprocess (pps ppx_jane)))
+ (libraries core.command_unix core hardcaml re stdio xilinx_vhdl)
+ (preprocess (pps ppx_jane)))
 
 (rule (targets data.ml) (deps)
  (action

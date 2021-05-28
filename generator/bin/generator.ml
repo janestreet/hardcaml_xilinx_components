@@ -83,4 +83,4 @@ let commands =
     [ "generate", command_generator; "list", command_list_modules ]
 ;;
 
-let () = Command.run commands
+let () = Command_unix.run commands
