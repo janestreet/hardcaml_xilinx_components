@@ -27,8 +27,8 @@ let%expect_test "trivial component" =
         module T = Hardcaml.Interface.Empty
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?instance inputs =
-          create ?lib ?arch ?instance ~parameters:params ~name:"component_name" inputs
+        let create ?lib ?arch ?attributes ?instance inputs =
+          create ?lib ?arch ?instance ?attributes ~parameters:params ~name:"component_name" inputs
       end
     end |}]
 ;;
@@ -70,8 +70,8 @@ let%expect_test "generics" =
         module T = Hardcaml.Interface.Empty
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?instance inputs =
-          create ?lib ?arch ?instance ~parameters:params ~name:"component_name" inputs
+        let create ?lib ?arch ?attributes ?instance inputs =
+          create ?lib ?arch ?instance ?attributes ~parameters:params ~name:"component_name" inputs
       end
     end |}]
 ;;
@@ -113,8 +113,8 @@ let%expect_test "ports" =
         end
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?instance inputs =
-          create ?lib ?arch ?instance ~parameters:params ~name:"component_name" inputs
+        let create ?lib ?arch ?attributes ?instance inputs =
+          create ?lib ?arch ?instance ?attributes ~parameters:params ~name:"component_name" inputs
       end
     end |}]
 ;;
@@ -159,7 +159,7 @@ let%expect_test "generic" =
         module T = Hardcaml.Interface.Empty
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?instance inputs =
-          create ?lib ?arch ?instance ~parameters:params ~name:"component_name" inputs
+        let create ?lib ?arch ?attributes ?instance inputs =
+          create ?lib ?arch ?instance ?attributes ~parameters:params ~name:"component_name" inputs
       end
     end|}]
