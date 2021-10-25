@@ -296,8 +296,8 @@ module ";String.capitalize comp.name;" = struct
     ; "\
 
     open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-    let create ?lib ?arch ?attributes ?instance inputs =
-      create ?lib ?arch ?instance ?attributes ~parameters:params ~name:\"";comp.name;"\" inputs
+    let create ?lib ?arch ?attributes ?instance ?(name=\"";comp.name;"\") inputs =
+      create ?lib ?arch ?instance ?attributes ~parameters:params ~name inputs
   end
 end
 
