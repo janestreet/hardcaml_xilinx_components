@@ -13,12 +13,12 @@ depends: [
   "ocaml" {>= "4.08.0"}
   "base"
   "core"
-  "core_kernel"
+  "core_unix"
   "hardcaml"
   "ppx_jane"
   "stdio"
-  "dune"        {>= "2.0.0"}
-  "re"          {>= "1.8.0"}
+  "dune"      {>= "2.0.0"}
+  "re"        {>= "1.8.0"}
 ]
 synopsis: "Hardcaml Xilinx component definitions"
 description: "
