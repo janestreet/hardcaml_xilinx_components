@@ -27,8 +27,9 @@ let%expect_test "trivial component" =
         module T = Hardcaml.Interface.Empty
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?attributes ?instance ?(name="component_name") inputs =
-          create ?lib ?arch ?instance ?attributes ~parameters:params ~name inputs
+        let create ?lib ?arch ?attributes ?instance ?(name="component_name") ?parameters inputs =
+          let parameters = Option.value ~default:params parameters in
+          create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
     end |}]
 ;;
@@ -70,8 +71,9 @@ let%expect_test "generics" =
         module T = Hardcaml.Interface.Empty
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?attributes ?instance ?(name="component_name") inputs =
-          create ?lib ?arch ?instance ?attributes ~parameters:params ~name inputs
+        let create ?lib ?arch ?attributes ?instance ?(name="component_name") ?parameters inputs =
+          let parameters = Option.value ~default:params parameters in
+          create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
     end |}]
 ;;
@@ -113,8 +115,9 @@ let%expect_test "ports" =
         end
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?attributes ?instance ?(name="component_name") inputs =
-          create ?lib ?arch ?instance ?attributes ~parameters:params ~name inputs
+        let create ?lib ?arch ?attributes ?instance ?(name="component_name") ?parameters inputs =
+          let parameters = Option.value ~default:params parameters in
+          create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
     end |}]
 ;;
@@ -134,32 +137,40 @@ let%expect_test "generic" =
                    ; dir     = In
                    ; type_   = Bit_vector (Some (Int 1, Down, Int 0))
                    ; default = Some (String "10") }
+                 ; { name    = "booleans"
+                   ; dir     = In
+                   ; type_   = Boolean
+                   ; default = Some (Id "TRUE") }
                  ]
     ; ports    = [] };
-  [%expect {|
+  [%expect{|
     module Component_name = struct
       module type P = sig
         val std_logic_vector_no_range : Hardcaml.Parameter.Std_logic_vector.t
         val std_logic_vector_with_range : Hardcaml.Parameter.Std_logic_vector.t
         val bit_vector : Hardcaml.Parameter.Bit_vector.t
+        val booleans : string
       end
       module P : P = struct
         let std_logic_vector_no_range = Hardcaml.Parameter.Std_logic_vector.of_string"11011"
         let std_logic_vector_with_range = Hardcaml.Parameter.Std_logic_vector.of_string"10"
         let bit_vector = Hardcaml.Parameter.Bit_vector.of_string "10"
+        let booleans = "TRUE"
       end
       module Make (P : P) = struct
         let params = [
           Hardcaml.Parameter.create ~name:"std_logic_vector_no_range" ~value:(Std_logic_vector P.std_logic_vector_no_range);
           Hardcaml.Parameter.create ~name:"std_logic_Vector_with_range" ~value:(Std_logic_vector P.std_logic_vector_with_range);
           Hardcaml.Parameter.create ~name:"bit_vector" ~value:(Bit_vector P.bit_vector);
+          Hardcaml.Parameter.create ~name:"booleans" ~value:(String P.booleans);
         ]
         module I = Hardcaml.Interface.Empty
         module O = Hardcaml.Interface.Empty
         module T = Hardcaml.Interface.Empty
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-        let create ?lib ?arch ?attributes ?instance ?(name="component_name") inputs =
-          create ?lib ?arch ?instance ?attributes ~parameters:params ~name inputs
+        let create ?lib ?arch ?attributes ?instance ?(name="component_name") ?parameters inputs =
+          let parameters = Option.value ~default:params parameters in
+          create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
-    end|}]
+    end |}]

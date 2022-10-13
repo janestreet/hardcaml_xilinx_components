@@ -82,23 +82,38 @@ module Inferred_port = struct
         -> fail ()
 
   (* infer ocaml type for boolean *)
-  let boolean port =
-    let create b =
-      { port
-      ; ocaml_name    = ocaml_name port.name
-      ; default_type  = "bool"
-      ; default_value = b
-      ; bits          = "1"
-      ; constr        = Hardcaml.Parameter.Value.Variants.bool.name }
-    in
-    match port.default with
-    | Some (Id s) -> (
-        match String.lowercase s with
-        | "true"  -> create "true"
-        | "false" -> create "false"
-        | _ -> failwith "port_boolean: invalid default value")
-    | None   -> create "false"
-    | Some x -> failwith ("port_boolean: invalid default type " ^ expr x)
+  let boolean port ~for_vhdl =
+    if for_vhdl then
+      let create b =
+        { port
+        ; ocaml_name    = ocaml_name port.name
+        ; default_type  = "bool"
+        ; default_value = b
+        ; bits          = "1"
+        ; constr        = Hardcaml.Parameter.Value.Variants.bool.name }
+      in
+      match port.default with
+      | Some (Id s) ->(
+          match String.lowercase s with
+          | "true" -> create "true"
+          | "false" -> create "false"
+          | _ -> raise_s [%message "port_boolean: invalid default value" (s : string)])
+      | None -> create "false"
+      | Some x -> raise_s [%message "port_boolean: invalid default type " (x : Vhdl.Expression.t)]
+    else
+      let create b =
+        { port
+        ; ocaml_name    = ocaml_name port.name
+        ; default_type  = "string"
+        ; default_value = b
+        ; bits          = "1"
+        ; constr        = Hardcaml.Parameter.Value.Variants.string.name }
+      in
+      match port.default with
+      | Some (Id "TRUE") ->  create "\"TRUE\""
+      | Some (Id "FALSE") -> create "\"FALSE\""
+      | None   -> create "FALSE"
+      | Some x -> raise_s [%message "port_boolean: invalid default type " (x : Vhdl.Expression.t)]
 
   (* infer ocaml type for real *)
   let real port =
@@ -214,10 +229,10 @@ module Inferred_port = struct
         default_value
 
   (* Perform VHDL to OCaml (adhoc) type inference *)
-  let create (port : Vhdl.Port.t) ~is_generic =
+  let create ?(for_vhdl=false) (port : Vhdl.Port.t) ~is_generic =
     match port.type_ with
     | Std_logic | Bit         -> std_logic port
-    | Boolean                 -> boolean   port
+    | Boolean                 -> boolean   port ~for_vhdl
     | Real    when is_generic -> real      port
     | Integer when is_generic -> integer   port
     | String  when is_generic -> string    port
@@ -232,8 +247,8 @@ module Inferred_port = struct
     | _                          -> not_implemented port
 end
 
-let vhdl_component_to_ocaml_module (comp : Vhdl.Component.t) =
-  let generics = List.map comp.generics ~f:(Inferred_port.create ~is_generic:true) in
+let vhdl_component_to_ocaml_module ?for_vhdl (comp : Vhdl.Component.t) =
+  let generics = List.map comp.generics ~f:(Inferred_port.create ?for_vhdl ~is_generic:true) in
   let lines = String.concat ~sep:"\n" in
   let default_types =
     lines (
@@ -296,8 +311,9 @@ module ";String.capitalize comp.name;" = struct
     ; "\
 
     open struct include Hardcaml.Instantiation.With_interface(I)(O) end
-    let create ?lib ?arch ?attributes ?instance ?(name=\"";comp.name;"\") inputs =
-      create ?lib ?arch ?instance ?attributes ~parameters:params ~name inputs
+    let create ?lib ?arch ?attributes ?instance ?(name=\"";comp.name;"\") ?parameters inputs =
+      let parameters = Option.value ~default:params parameters in
+      create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
   end
 end
 

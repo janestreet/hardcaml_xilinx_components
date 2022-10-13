@@ -12,13 +12,13 @@ let filter_by_component_name regexps (component : Xilinx_vhdl.Vhdl.Component.t) 
   List.fold regexps ~init:None ~f:matches
 ;;
 
-let parse regexps vhdl =
+let parse ~for_vhdl regexps vhdl =
   Xilinx_vhdl.Parse.parse_string vhdl
   |> Or_error.ok_exn
   |> List.filter_map ~f:(filter_by_component_name regexps)
   |> List.iter ~f:(fun component ->
     component
-    |> Xilinx_vhdl.Vhdl_to_hardcaml.vhdl_component_to_ocaml_module
+    |> Xilinx_vhdl.Vhdl_to_hardcaml.vhdl_component_to_ocaml_module ~for_vhdl
     |> Out_channel.output_string Out_channel.stdout)
 ;;
 
@@ -58,11 +58,14 @@ let command_generator =
     ~summary:"Generate ocaml module"
     [%map_open.Command
       let filters = filters
-      and vhdl = vhdl in
+      and vhdl = vhdl
+      and for_vhdl =
+        flag "-for-vhdl" no_arg ~doc:"Generate code suitable for writing back to VHDL"
+      in
       fun () ->
         let filters = get_filters filters in
         let vhdl = get_vhdl vhdl in
-        parse filters vhdl]
+        parse ~for_vhdl filters vhdl]
 ;;
 
 let command_list_modules =
