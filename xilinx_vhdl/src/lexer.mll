@@ -93,7 +93,7 @@ rule token = parse
                               P_hex_string (String.sub lxm ~pos:2 ~len:(String.length lxm - 3)) }
 
   (* string constant *)
-  | '"' ['A'-'Z' 'a'-'z' '0'-'9' '_' '/' '\\' '.'] * '"'
+  | '"' ['A'-'Z' 'a'-'z' '0'-'9' '_' '/' '\\' '.' ':' '[' ']'] * '"'
                             { let lxm = lexeme lexbuf in
                               P_string (String.sub lxm ~pos:1 ~len:(String.length lxm - 2)) }
 
@@ -106,6 +106,6 @@ rule token = parse
                             { let id = lexeme lexbuf in
                               let id_lwr = String.lowercase id in
                               try let tok = Hashtbl.find_exn keyword_table id_lwr in tok
-                              with Not_found_s _ | Caml.Not_found -> P_ident id }
+                              with Not_found_s _ | Stdlib.Not_found -> P_ident id }
 
   | eof                     { P_endfile }
