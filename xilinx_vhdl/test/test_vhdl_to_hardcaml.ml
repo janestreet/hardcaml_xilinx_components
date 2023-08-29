@@ -51,14 +51,14 @@ let%expect_test "generics" =
   [%expect {|
     module Component_name = struct
       module type P = sig
-        val port_in : Hardcaml.Parameter.Std_logic.t
-        val port_inout : Hardcaml.Parameter.Std_logic.t
-        val port_out : Hardcaml.Parameter.Std_logic.t
+        val port_in : Hardcaml.Logic.Std_logic.t
+        val port_inout : Hardcaml.Logic.Std_logic.t
+        val port_out : Hardcaml.Logic.Std_logic.t
       end
       module P : P = struct
-        let port_in = Hardcaml.Parameter.Std_logic.U
-        let port_inout = Hardcaml.Parameter.Std_logic.U
-        let port_out = Hardcaml.Parameter.Std_logic.U
+        let port_in = Hardcaml.Logic.Std_logic.U
+        let port_inout = Hardcaml.Logic.Std_logic.U
+        let port_out = Hardcaml.Logic.Std_logic.U
       end
       module Make (P : P) = struct
         let params = [
@@ -146,15 +146,15 @@ let%expect_test "generic" =
   [%expect{|
     module Component_name = struct
       module type P = sig
-        val std_logic_vector_no_range : Hardcaml.Parameter.Std_logic_vector.t
-        val std_logic_vector_with_range : Hardcaml.Parameter.Std_logic_vector.t
-        val bit_vector : Hardcaml.Parameter.Bit_vector.t
+        val std_logic_vector_no_range : Hardcaml.Logic.Std_logic_vector.t
+        val std_logic_vector_with_range : Hardcaml.Logic.Std_logic_vector.t
+        val bit_vector : Hardcaml.Logic.Bit_vector.t
         val booleans : string
       end
       module P : P = struct
-        let std_logic_vector_no_range = Hardcaml.Parameter.Std_logic_vector.of_string"11011"
-        let std_logic_vector_with_range = Hardcaml.Parameter.Std_logic_vector.of_string"10"
-        let bit_vector = Hardcaml.Parameter.Bit_vector.of_string "10"
+        let std_logic_vector_no_range = Hardcaml.Logic.Std_logic_vector.of_string"11011"
+        let std_logic_vector_with_range = Hardcaml.Logic.Std_logic_vector.of_string"10"
+        let bit_vector = Hardcaml.Logic.Bit_vector.of_string "10"
         let booleans = "TRUE"
       end
       module Make (P : P) = struct

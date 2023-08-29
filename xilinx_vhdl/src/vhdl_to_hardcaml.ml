@@ -54,9 +54,9 @@ module Inferred_port = struct
     let create b =
       { port
       ; ocaml_name    = ocaml_name port.name
-      ; default_type  = "Hardcaml.Parameter.Std_logic.t"
-      ; default_value = String.concat [ "Hardcaml.Parameter.Std_logic."
-                                      ; b |> Parameter.Std_logic.Variants.to_name ]
+      ; default_type  = "Hardcaml.Logic.Std_logic.t"
+      ; default_value = String.concat [ "Hardcaml.Logic.Std_logic."
+                                      ; b |> Logic.Std_logic.Variants.to_name ]
       ; bits          = "1"
       ; constr        = Hardcaml.Parameter.Value.Variants.std_logic.name }
     in
@@ -67,7 +67,7 @@ module Inferred_port = struct
       match e with
       | X01 _ -> create L0
       | Char c when String.length c = 1 ->
-        (match Parameter.Std_logic.of_char_exn c.[0] with
+        (match Logic.Std_logic.of_char_exn c.[0] with
          | c -> create c
          | exception _ -> fail ())
       | Char _
@@ -179,16 +179,16 @@ module Inferred_port = struct
     let create_std_logic_vector bits value =
       { port
       ; ocaml_name    = ocaml_name port.name
-      ; default_type  = "Hardcaml.Parameter.Std_logic_vector.t"
-      ; default_value = "Hardcaml.Parameter.Std_logic_vector.of_string" ^ value
+      ; default_type  = "Hardcaml.Logic.Std_logic_vector.t"
+      ; default_value = "Hardcaml.Logic.Std_logic_vector.of_string" ^ value
       ; bits
       ; constr        = Hardcaml.Parameter.Value.Variants.std_logic_vector.name }
     in
     let create_bit_vector bits value =
       { port
       ; ocaml_name    = ocaml_name port.name
-      ; default_type  = "Hardcaml.Parameter.Bit_vector.t"
-      ; default_value = "Hardcaml.Parameter.Bit_vector.of_string " ^ value
+      ; default_type  = "Hardcaml.Logic.Bit_vector.t"
+      ; default_value = "Hardcaml.Logic.Bit_vector.of_string " ^ value
       ; bits
       ; constr        = Hardcaml.Parameter.Value.Variants.bit_vector.name }
     in
