@@ -1,28 +1,36 @@
 open! Import
 
 (* This is required by the (stupid) parser *)
-let package s = Printf.sprintf {|
+let package s =
+  Printf.sprintf
+    {|
       library IEEE;
       use IEEE.STD_LOGIC_1164.all;
       package TOP is
         %s
       end TOP;
-  |} s
+  |}
+    s
+;;
 
 (* Parse VHDL and print as a sexp *)
 let print_vhdl string =
-  print_s [%message
-    "" ~_:(Xilinx_vhdl.Parse.parse_string string : Vhdl.Component.t list Or_error.t)]
+  print_s
+    [%message
+      "" ~_:(Xilinx_vhdl.Parse.parse_string string : Vhdl.Component.t list Or_error.t)]
+;;
 
 (* Tests *)
 
 let%expect_test "empty file" =
   print_vhdl "";
   [%expect {| (Error ("parse error" (at_line 1))) |}]
+;;
 
 let%expect_test "empty package" =
   print_vhdl (package "");
   [%expect {| (Ok ()) |}]
+;;
 
 let%expect_test "simplest component" =
   print_vhdl (package "component foo end component;");
@@ -31,34 +39,42 @@ let%expect_test "simplest component" =
       (name foo)
       (generics ())
       (ports    ())))) |}]
+;;
 
 let%expect_test "2 componenents" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
   component a end component;
   component b end component;
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok (
       ((name a) (generics ()) (ports ()))
       ((name b) (generics ()) (ports ())))) |}]
+;;
 
 let%expect_test "comment" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
   -- this is a
   component a end component;
   -- this is b
   component b end component;
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok (
       ((name a) (generics ()) (ports ()))
       ((name b) (generics ()) (ports ())))) |}]
+;;
 
 let%expect_test "bit port types" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
   component a
     port (
       a : in std_logic := '1';
@@ -67,7 +83,8 @@ let%expect_test "bit port types" =
     );
   end component;
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics ())
@@ -84,10 +101,12 @@ let%expect_test "bit port types" =
          (dir   In)
          (type_ Bit)
          (default ()))))))) |}]
+;;
 
 let%expect_test "vector port types" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
   component a
     port (
       a : in std_logic_vector;
@@ -95,7 +114,8 @@ let%expect_test "vector port types" =
     );
   end component;
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics ())
@@ -108,11 +128,12 @@ let%expect_test "vector port types" =
          (dir  Out)
          (type_ (Bit_vector ()))
          (default ()))))))) |}]
-
+;;
 
 let%expect_test "other port types" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
   component a
     port (
       a : in integer;
@@ -122,7 +143,8 @@ let%expect_test "other port types" =
     );
   end component;
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics ())
@@ -143,10 +165,12 @@ let%expect_test "other port types" =
          (dir   Out)
          (type_ String)
          (default ()))))))) |}]
+;;
 
 let%expect_test "generics" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
   component a
     generic (
       a : in integer := 0;
@@ -156,7 +180,8 @@ let%expect_test "generics" =
     );
   end component;
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics (
@@ -177,13 +202,16 @@ let%expect_test "generics" =
          (type_ String)
          (default ()))))
       (ports ())))) |}]
+;;
 
 (* a few operator precedence tests *)
 
 let%expect_test "precedence [+] [-] [&] same" =
-  print_vhdl @@ package @@
-  {| component a generic (a : in integer := a + b - c & d); end component; |};
-  [%expect {|
+  print_vhdl
+  @@ package
+  @@ {| component a generic (a : in integer := a + b - c & d); end component; |};
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics ((
@@ -199,11 +227,14 @@ let%expect_test "precedence [+] [-] [&] same" =
             (Id c))
           (Id d)))))))
       (ports ())))) |}]
+;;
 
 let%expect_test "precedence [*] [/] same" =
-  print_vhdl @@ package @@
-  {| component a generic (a : in integer := a * b / c * d); end component; |};
-  [%expect {|
+  print_vhdl
+  @@ package
+  @@ {| component a generic (a : in integer := a * b / c * d); end component; |};
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics ((
@@ -219,12 +250,15 @@ let%expect_test "precedence [*] [/] same" =
             (Id c))
           (Id d)))))))
       (ports ())))) |}]
+;;
 
 let%expect_test "precedence [*] > [+]" =
-  print_vhdl @@ package @@
-  {| component a generic ( a : in integer := a + b * c
+  print_vhdl
+  @@ package
+  @@ {| component a generic ( a : in integer := a + b * c
                          ; b : in integer := a * b + c); end component; |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics (
@@ -247,12 +281,15 @@ let%expect_test "precedence [*] > [+]" =
              (Id b))
            (Id c)))))))
       (ports ())))) |}]
+;;
 
 let%expect_test "precedence [/] > [-]" =
-  print_vhdl @@ package @@
-  {| component a generic ( a : in integer := a - b / c
+  print_vhdl
+  @@ package
+  @@ {| component a generic ( a : in integer := a - b / c
                          ; b : in integer := a / b - c); end component; |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name a)
       (generics (
@@ -275,11 +312,13 @@ let%expect_test "precedence [/] > [-]" =
              (Id b))
            (Id c)))))))
       (ports ())))) |}]
+;;
 
 (* A couple of components extracted from [unisim_VCOMP.vhd] (2017.4) *)
 let%expect_test "LUT6" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
 ----- component LUT6 -----
 component LUT6
   generic (
@@ -298,7 +337,8 @@ end component;
 attribute BOX_TYPE of
   LUT6 : component is "PRIMITIVE";
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name LUT6)
       (generics ((
@@ -335,10 +375,12 @@ attribute BOX_TYPE of
          (dir   In)
          (type_ Std_logic)
          (default ()))))))) |}]
+;;
 
 let%expect_test "DCM_ADV" =
-  print_vhdl @@ package @@
-  {|
+  print_vhdl
+  @@ package
+  @@ {|
 ----- component DCM_ADV -----
 component DCM_ADV
   generic (
@@ -390,7 +432,8 @@ end component;
 attribute BOX_TYPE of
   DCM_ADV : component is "PRIMITIVE";
   |};
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name DCM_ADV)
       (generics (
@@ -559,3 +602,4 @@ attribute BOX_TYPE of
          (dir   In)
          (type_ Std_logic)
          (default ((Char 0))))))))) |}]
+;;

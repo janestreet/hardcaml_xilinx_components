@@ -17,9 +17,9 @@ let parse ~for_vhdl regexps vhdl =
   |> Or_error.ok_exn
   |> List.filter_map ~f:(filter_by_component_name regexps)
   |> List.iter ~f:(fun component ->
-    component
-    |> Xilinx_vhdl.Vhdl_to_hardcaml.vhdl_component_to_ocaml_module ~for_vhdl
-    |> Out_channel.output_string Out_channel.stdout)
+       component
+       |> Xilinx_vhdl.Vhdl_to_hardcaml.vhdl_component_to_ocaml_module ~for_vhdl
+       |> Out_channel.output_string Out_channel.stdout)
 ;;
 
 let list_by_regexp regexps vhdl =

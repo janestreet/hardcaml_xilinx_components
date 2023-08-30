@@ -4,13 +4,10 @@ let test component =
   print_endline (Vhdl_to_hardcaml.vhdl_component_to_ocaml_module component)
 ;;
 
-
 let%expect_test "trivial component" =
-  test
-    { name     = "component_name"
-    ; generics = []
-    ; ports    = [] };
-  [%expect {|
+  test { name = "component_name"; generics = []; ports = [] };
+  [%expect
+    {|
     module Component_name = struct
       module type P = sig
 
@@ -36,19 +33,17 @@ let%expect_test "trivial component" =
 
 let ports =
   List.map Vhdl.Port_direction.all ~f:(fun dir ->
-    { Vhdl.Port.
-      name    = concat [ "port_"; dir |> Vhdl.Port_direction.to_string ]
+    { Vhdl.Port.name = concat [ "port_"; dir |> Vhdl.Port_direction.to_string ]
     ; dir
-    ; type_   = Bit
-    ; default = None })
+    ; type_ = Bit
+    ; default = None
+    })
 ;;
 
 let%expect_test "generics" =
-  test
-    { name     = "component_name"
-    ; generics = ports
-    ; ports    = [] };
-  [%expect {|
+  test { name = "component_name"; generics = ports; ports = [] };
+  [%expect
+    {|
     module Component_name = struct
       module type P = sig
         val port_in : Hardcaml.Logic.Std_logic.t
@@ -79,11 +74,9 @@ let%expect_test "generics" =
 ;;
 
 let%expect_test "ports" =
-  test
-    { name     = "component_name"
-    ; generics = []
-    ; ports };
-  [%expect {|
+  test { name = "component_name"; generics = []; ports };
+  [%expect
+    {|
     module Component_name = struct
       module type P = sig
 
@@ -124,26 +117,29 @@ let%expect_test "ports" =
 
 let%expect_test "generic" =
   test
-    { name     = "component_name"
-    ; generics = [ { name    = "std_logic_vector_no_range"
-                   ; dir     = In
-                   ; type_   = Std_logic_vector None
-                   ; default = Some (String "11011") }
-                 ; { name    = "std_logic_Vector_with_range"
-                   ; dir     = In
-                   ; type_   = Std_logic_vector (Some (Int 1, Down, Int 0))
-                   ; default = Some (String "10") }
-                 ; { name    = "bit_vector"
-                   ; dir     = In
-                   ; type_   = Bit_vector (Some (Int 1, Down, Int 0))
-                   ; default = Some (String "10") }
-                 ; { name    = "booleans"
-                   ; dir     = In
-                   ; type_   = Boolean
-                   ; default = Some (Id "TRUE") }
-                 ]
-    ; ports    = [] };
-  [%expect{|
+    { name = "component_name"
+    ; generics =
+        [ { name = "std_logic_vector_no_range"
+          ; dir = In
+          ; type_ = Std_logic_vector None
+          ; default = Some (String "11011")
+          }
+        ; { name = "std_logic_Vector_with_range"
+          ; dir = In
+          ; type_ = Std_logic_vector (Some (Int 1, Down, Int 0))
+          ; default = Some (String "10")
+          }
+        ; { name = "bit_vector"
+          ; dir = In
+          ; type_ = Bit_vector (Some (Int 1, Down, Int 0))
+          ; default = Some (String "10")
+          }
+        ; { name = "booleans"; dir = In; type_ = Boolean; default = Some (Id "TRUE") }
+        ]
+    ; ports = []
+    };
+  [%expect
+    {|
     module Component_name = struct
       module type P = sig
         val std_logic_vector_no_range : Hardcaml.Logic.Std_logic_vector.t
@@ -174,3 +170,4 @@ let%expect_test "generic" =
           create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
     end |}]
+;;
