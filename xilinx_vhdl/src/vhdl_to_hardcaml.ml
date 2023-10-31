@@ -321,7 +321,7 @@ let vhdl_component_to_ocaml_module ?for_vhdl (comp : Vhdl.Component.t) =
         ; mod_name
         ; " = struct\n      type 'a t = {\n"
         ; ocaml_ports
-        ; "\n      }[@@deriving sexp_of, hardcaml]\n    end\n"
+        ; "\n      }[@@deriving hardcaml]\n    end\n"
         ]
   in
   String.concat

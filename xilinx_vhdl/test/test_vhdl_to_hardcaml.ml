@@ -92,19 +92,19 @@ let%expect_test "ports" =
         module I = struct
           type 'a t = {
             port_in : 'a[@bits 1][@rtlname "port_In"];
-          }[@@deriving sexp_of, hardcaml]
+          }[@@deriving hardcaml]
         end
 
         module O = struct
           type 'a t = {
             port_out : 'a[@bits 1][@rtlname "port_Out"];
-          }[@@deriving sexp_of, hardcaml]
+          }[@@deriving hardcaml]
         end
 
         module T = struct
           type 'a t = {
             port_inout : 'a[@bits 1][@rtlname "port_Inout"];
-          }[@@deriving sexp_of, hardcaml]
+          }[@@deriving hardcaml]
         end
 
         open struct include Hardcaml.Instantiation.With_interface(I)(O) end
