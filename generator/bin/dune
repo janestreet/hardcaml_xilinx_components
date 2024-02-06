@@ -1,7 +1,13 @@
-(executables (names generator) (public_names hardcaml_xilinx_components)
+(executables
+ (modes byte exe)
+ (names generator)
+ (public_names hardcaml_xilinx_components)
  (libraries core_unix.command_unix core hardcaml re stdio xilinx_vhdl)
- (preprocess (pps ppx_jane)))
+ (preprocess
+  (pps ppx_jane)))
 
-(rule (targets data.ml) (deps)
+(rule
+ (targets data.ml)
+ (deps)
  (action
   (bash "echo \"let read (_s : string) : string option = None\" > data.ml")))

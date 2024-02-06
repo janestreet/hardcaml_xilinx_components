@@ -1,3 +1,5 @@
-(library (name xilinx_vhdl_test)
+(library
+ (name xilinx_vhdl_test)
  (libraries base expect_test_helpers_core stdio xilinx_vhdl)
- (preprocess (pps ppx_jane)))
+ (preprocess
+  (pps ppx_jane)))
