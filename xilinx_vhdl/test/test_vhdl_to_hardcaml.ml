@@ -28,7 +28,8 @@ let%expect_test "trivial component" =
           let parameters = Option.value ~default:params parameters in
           create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
-    end |}]
+    end
+    |}]
 ;;
 
 let ports =
@@ -70,7 +71,8 @@ let%expect_test "generics" =
           let parameters = Option.value ~default:params parameters in
           create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
-    end |}]
+    end
+    |}]
 ;;
 
 let%expect_test "ports" =
@@ -112,7 +114,8 @@ let%expect_test "ports" =
           let parameters = Option.value ~default:params parameters in
           create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
-    end |}]
+    end
+    |}]
 ;;
 
 let%expect_test "generic" =
@@ -169,5 +172,6 @@ let%expect_test "generic" =
           let parameters = Option.value ~default:params parameters in
           create ?lib ?arch ?instance ?attributes ~parameters ~name inputs
       end
-    end |}]
+    end
+    |}]
 ;;

@@ -34,11 +34,13 @@ let%expect_test "empty package" =
 
 let%expect_test "simplest component" =
   print_vhdl (package "component foo end component;");
-  [%expect {|
+  [%expect
+    {|
     (Ok ((
       (name foo)
       (generics ())
-      (ports    ())))) |}]
+      (ports    ()))))
+    |}]
 ;;
 
 let%expect_test "2 componenents" =
@@ -52,7 +54,8 @@ let%expect_test "2 componenents" =
     {|
     (Ok (
       ((name a) (generics ()) (ports ()))
-      ((name b) (generics ()) (ports ())))) |}]
+      ((name b) (generics ()) (ports ()))))
+    |}]
 ;;
 
 let%expect_test "comment" =
@@ -68,7 +71,8 @@ let%expect_test "comment" =
     {|
     (Ok (
       ((name a) (generics ()) (ports ()))
-      ((name b) (generics ()) (ports ())))) |}]
+      ((name b) (generics ()) (ports ()))))
+    |}]
 ;;
 
 let%expect_test "bit port types" =
@@ -100,7 +104,8 @@ let%expect_test "bit port types" =
         ((name  c)
          (dir   In)
          (type_ Bit)
-         (default ()))))))) |}]
+         (default ())))))))
+    |}]
 ;;
 
 let%expect_test "vector port types" =
@@ -127,7 +132,8 @@ let%expect_test "vector port types" =
         ((name b)
          (dir  Out)
          (type_ (Bit_vector ()))
-         (default ()))))))) |}]
+         (default ())))))))
+    |}]
 ;;
 
 let%expect_test "other port types" =
@@ -164,7 +170,8 @@ let%expect_test "other port types" =
         ((name  d)
          (dir   Out)
          (type_ String)
-         (default ()))))))) |}]
+         (default ())))))))
+    |}]
 ;;
 
 let%expect_test "generics" =
@@ -201,7 +208,8 @@ let%expect_test "generics" =
          (dir   Out)
          (type_ String)
          (default ()))))
-      (ports ())))) |}]
+      (ports ()))))
+    |}]
 ;;
 
 (* a few operator precedence tests *)
@@ -226,7 +234,8 @@ let%expect_test "precedence [+] [-] [&] same" =
               (Id b))
             (Id c))
           (Id d)))))))
-      (ports ())))) |}]
+      (ports ()))))
+    |}]
 ;;
 
 let%expect_test "precedence [*] [/] same" =
@@ -249,7 +258,8 @@ let%expect_test "precedence [*] [/] same" =
               (Id b))
             (Id c))
           (Id d)))))))
-      (ports ())))) |}]
+      (ports ()))))
+    |}]
 ;;
 
 let%expect_test "precedence [*] > [+]" =
@@ -280,7 +290,8 @@ let%expect_test "precedence [*] > [+]" =
              (Id a)
              (Id b))
            (Id c)))))))
-      (ports ())))) |}]
+      (ports ()))))
+    |}]
 ;;
 
 let%expect_test "precedence [/] > [-]" =
@@ -311,7 +322,8 @@ let%expect_test "precedence [/] > [-]" =
              (Id a)
              (Id b))
            (Id c)))))))
-      (ports ())))) |}]
+      (ports ()))))
+    |}]
 ;;
 
 (* A couple of components extracted from [unisim_VCOMP.vhd] (2017.4) *)
@@ -374,7 +386,8 @@ attribute BOX_TYPE of
         ((name  I5)
          (dir   In)
          (type_ Std_logic)
-         (default ()))))))) |}]
+         (default ())))))))
+    |}]
 ;;
 
 let%expect_test "DCM_ADV" =
@@ -601,5 +614,6 @@ attribute BOX_TYPE of
         ((name  RST)
          (dir   In)
          (type_ Std_logic)
-         (default ((Char 0))))))))) |}]
+         (default ((Char 0)))))))))
+    |}]
 ;;
