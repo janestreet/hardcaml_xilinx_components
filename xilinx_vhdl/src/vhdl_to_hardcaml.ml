@@ -111,8 +111,8 @@ module Inferred_port = struct
         }
       in
       match port.default with
-      | Some (Id "TRUE") -> create "\"TRUE\""
-      | Some (Id "FALSE") -> create "\"FALSE\""
+      | Some (Id s) when String.(lowercase s = "true") -> create "\"TRUE\""
+      | Some (Id s) when String.(lowercase s = "false") -> create "\"FALSE\""
       | None -> create "FALSE"
       | Some x ->
         raise_s [%message "port_boolean: invalid default type " (x : Vhdl.Expression.t)])
@@ -262,7 +262,11 @@ module Inferred_port = struct
   ;;
 end
 
-let vhdl_component_to_ocaml_module ?for_vhdl (comp : Vhdl.Component.t) =
+let vhdl_component_to_ocaml_module
+  ?for_vhdl
+  ?(wrap_in_module = true)
+  (comp : Vhdl.Component.t)
+  =
   let generics =
     List.map comp.generics ~f:(Inferred_port.create ?for_vhdl ~is_generic:true)
   in
@@ -286,11 +290,16 @@ let vhdl_component_to_ocaml_module ?for_vhdl (comp : Vhdl.Component.t) =
            param.constr
            param.ocaml_name))
   in
+  let with_module body =
+    if wrap_in_module
+    then
+      String.concat
+        [ "module "; String.capitalize comp.name; " = struct\n"; body; "end\n\n" ]
+    else body
+  in
   let header =
     String.concat
-      [ "module "
-      ; String.capitalize comp.name
-      ; " = struct\n  module type P = sig\n"
+      [ "  module type P = sig\n"
       ; default_types
       ; "\n  end\n  module P : P = struct\n"
       ; default_values
@@ -336,7 +345,7 @@ let vhdl_component_to_ocaml_module ?for_vhdl (comp : Vhdl.Component.t) =
     ; "\") ?parameters inputs =\n\
       \      let parameters = Option.value ~default:params parameters in\n\
       \      create ?lib ?arch ?instance ?attributes ~parameters ~name inputs\n\
-      \  end\n\
-       end\n\n"
+      \  end\n"
     ]
+  |> with_module
 ;;

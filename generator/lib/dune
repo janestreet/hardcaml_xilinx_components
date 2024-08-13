@@ -1,0 +1,13 @@
+(library
+ (name xilinx_vhdl_generator)
+ (public_name hardcaml_xilinx_components.xilinx_vhdl_generator)
+ (libraries core re xilinx_vhdl)
+ (preprocess
+  (pps ppx_jane)))
+
+(rule
+ (targets data.ml data.mli)
+ (deps)
+ (action
+  (bash
+    "\necho \"let by_filename : (string*string) list = []\" > data.ml\necho \"val by_filename : (string*string) list\" > data.mli\n")))

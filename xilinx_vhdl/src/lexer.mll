@@ -93,7 +93,7 @@ rule token = parse
                               P_hex_string (String.sub lxm ~pos:2 ~len:(String.length lxm - 3)) }
 
   (* string constant *)
-  | '"' ['A'-'Z' 'a'-'z' '0'-'9' '_' '/' '\\' '.' ':' '[' ']'] * '"'
+  | '"' ['A'-'Z' 'a'-'z' '0'-'9' '_' '/' '\\' '.' ':' '[' ']' ' '] * '"'
                             { let lxm = lexeme lexbuf in
                               P_string (String.sub lxm ~pos:1 ~len:(String.length lxm - 2)) }
 
