@@ -9,7 +9,7 @@ let package s =
       package TOP is
         %s
       end TOP;
-  |}
+    |}
     s
 ;;
 

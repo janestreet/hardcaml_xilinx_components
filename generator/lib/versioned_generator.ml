@@ -1,5 +1,9 @@
 open Core
 
+(* Optionally add names of modules here to exclude them from the build, this can sometimes
+   help with long OCaml compile times. *)
+let excluded_modules = []
+
 module Package = struct
   type t =
     | Unisim
@@ -106,7 +110,11 @@ end = struct
     List.fold
       components
       ~init:(Map.empty (module String))
-      ~f:(fun map comp -> Map.add_exn map ~key:comp.name ~data:comp)
+      ~f:(fun map comp ->
+        (* filter out excluded modules *)
+        if List.mem excluded_modules comp.name ~equal:String.equal
+        then map
+        else Map.add_exn map ~key:comp.name ~data:comp)
   ;;
 
   let fold t ~init ~f =
