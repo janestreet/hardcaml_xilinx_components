@@ -5,8 +5,7 @@
     A top level module is written containing all the components for all versions, but
     using the shared components.
 
-    All the supported versions are built into the library in the [Data] module.
-*)
+    All the supported versions are built into the library in the [Data] module. *)
 
 module Package : sig
   type t =
