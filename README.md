@@ -1,7 +1,7 @@
-"hardcaml_xilinx_components"
-============================
+"Unisim and XPM Component Interfaces"
+=====================================
 
-`hardcaml_xilinx_components` contains an incomplete vhdl parser that
+`hardcaml_xilinx_components` contains an incomplete VHDL parser that
 is able to parse the component definitions for the Xilinx Unisim and
 XPM libraries.
 
@@ -18,7 +18,7 @@ $ hardcaml_xilinx_components.exe generate \
    > xilinx_components.ml
 ```
 
-If no filters are specified, all components are output. If no vhdl is
+If no filters are specified, all components are output. If no VHDL is
 specified, stdin is used.
 
 It has been tested with Vivado versions 2016.4 upto 2019.1.
