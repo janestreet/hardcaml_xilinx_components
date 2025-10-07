@@ -24,7 +24,7 @@ end
 
 module Versions : sig
   module V : sig
-    type t [@@deriving sexp_of, compare]
+    type t [@@deriving sexp_of, compare ~localize]
 
     val to_string : t -> string
     val to_module_name : t -> string

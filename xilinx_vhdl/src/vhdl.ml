@@ -4,7 +4,7 @@ module Range_direction = struct
   type t =
     | Up
     | Down
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 
   let equal = [%compare.equal: t]
 end
@@ -21,11 +21,12 @@ module Expression = struct
     | Others of string
     | String of string
     | X01 of string
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Range = struct
-  type t = Expression.t * Range_direction.t * Expression.t [@@deriving compare, sexp_of]
+  type t = Expression.t * Range_direction.t * Expression.t
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Type = struct
@@ -39,7 +40,7 @@ module Type = struct
     | Std_logic_vector of Range.t option
     | String
     | Time
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Port_direction = struct
@@ -47,7 +48,7 @@ module Port_direction = struct
     | In
     | Inout
     | Out
-  [@@deriving compare, enumerate, sexp_of]
+  [@@deriving compare ~localize, enumerate, sexp_of]
 
   let equal = [%compare.equal: t]
   let to_string t = t |> [%sexp_of: t] |> Sexp.to_string
@@ -60,7 +61,7 @@ module Port = struct
     ; type_ : Type.t
     ; default : Expression.t option
     }
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Component = struct
@@ -69,5 +70,5 @@ module Component = struct
     ; generics : Port.t list
     ; ports : Port.t list
     }
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end

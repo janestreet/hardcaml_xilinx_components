@@ -4,7 +4,7 @@ module Range_direction : sig
   type t =
     | Up
     | Down
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 
   include Equal.S with type t := t
 end
@@ -21,11 +21,12 @@ module Expression : sig
     | Others of string
     | String of string
     | X01 of string
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Range : sig
-  type t = Expression.t * Range_direction.t * Expression.t [@@deriving compare, sexp_of]
+  type t = Expression.t * Range_direction.t * Expression.t
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Type : sig
@@ -39,7 +40,7 @@ module Type : sig
     | Std_logic_vector of Range.t option
     | String
     | Time
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Port_direction : sig
@@ -47,7 +48,7 @@ module Port_direction : sig
     | In
     | Inout
     | Out
-  [@@deriving compare, enumerate, sexp_of]
+  [@@deriving compare ~localize, enumerate, sexp_of]
 
   include Equal.S with type t := t
 
@@ -61,7 +62,7 @@ module Port : sig
     ; type_ : Type.t
     ; default : Expression.t option
     }
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
 
 module Component : sig
@@ -70,5 +71,5 @@ module Component : sig
     ; generics : Port.t list
     ; ports : Port.t list
     }
-  [@@deriving compare, sexp_of]
+  [@@deriving compare ~localize, sexp_of]
 end
