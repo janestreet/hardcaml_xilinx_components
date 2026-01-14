@@ -25,8 +25,8 @@ let rec expr ?(id = Fn.id) : Vhdl.Expression.t -> string = function
   | X01 s -> "TO_X01(" ^ s ^ ")"
 ;;
 
-(* signal, port or generic value with relevant OCaml types inferred from
-   the VHDL type and/or default value *)
+(* signal, port or generic value with relevant OCaml types inferred from the VHDL type
+   and/or default value *)
 module Inferred_port = struct
   type t =
     { port : Vhdl.Port.t
@@ -186,8 +186,8 @@ module Inferred_port = struct
            (expr lo ~id:ocaml_name_ref))
   ;;
 
-  (* infer ocaml type for std_logic_vector, bit_vector generic.  This is a bit more
-     complex as the width may need to be inferred from the default value. *)
+  (* infer ocaml type for std_logic_vector, bit_vector generic. This is a bit more complex
+     as the width may need to be inferred from the default value. *)
   let generic_vector port (range : Vhdl.Range.t option) ~is_bitvector =
     let create_std_logic_vector bits value =
       { port
